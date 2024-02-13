@@ -1,11 +1,12 @@
 package id.kupipancong.accounting.entity;
 
 import id.kupipancong.accounting.enums.LedgerType;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -30,14 +31,19 @@ public class LedgerEntry {
     private LedgerType ledgerType;
     private Date date;
     private Double amount;
-    @ManyToOne
-    private Transaction transaction;
+
     @ManyToOne
     private Account account;
+    private String createdBy;
+    @CreationTimestamp
     @Column(columnDefinition = "timestamp")
     private LocalDateTime createdAt;
+    private String updatedBy;
     @UpdateTimestamp
     @Column(columnDefinition = "timestamp")
     private LocalDateTime updatedAt;
-    private String updatedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "transaction_id")
+    private Transaction transaction;
 }

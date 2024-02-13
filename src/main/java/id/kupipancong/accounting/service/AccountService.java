@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class AccountService {
@@ -53,7 +54,7 @@ public class AccountService {
             if (Objects.nonNull(request.getDescription())){
                 if (!request.getDescription().equals("")){
                     predicates.add(criteriaBuilder.like(
-                            root.get("code"), "%"+request.getDescription()+"%"
+                            root.get("description"), "%"+request.getDescription()+"%"
                     ));
                 }
             }
@@ -72,12 +73,21 @@ public class AccountService {
         return new PageImpl<>(accountResponses, pageable, accounts.getTotalElements());
     }
 
-    public AccountResponse view(String id){
+    public AccountResponse get(String id){
         Account account = accountRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found")
         );
 
         return toAccountResponse(account);
+    }
+
+    public Account getByCode(String code){
+        Optional<Account> accountOptional = accountRepository.findAccountByCode(code);
+        if (accountOptional.isEmpty()){
+            return null;
+        }else {
+            return accountOptional.get();
+        }
     }
 
     public AccountResponse create(CreateAccountRequest request){
@@ -102,7 +112,8 @@ public class AccountService {
         return toAccountResponse(account);
     }
 
-    private AccountResponse toAccountResponse(Account account){
+
+    public AccountResponse toAccountResponse(Account account){
         return AccountResponse.builder()
                 .id(account.getId())
                 .code(account.getCode())

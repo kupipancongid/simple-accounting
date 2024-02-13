@@ -26,8 +26,8 @@ public class AccountController {
             @RequestParam(value = "id", required = false) String id,
             @RequestParam(value = "code", required = false) String code,
             @RequestParam(value = "description", required = false) String description,
-            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
-            @RequestParam(value = "size", required = false, defaultValue = "10") Integer size
+            @RequestParam(value = "page", required = true, defaultValue = "0") Integer page,
+            @RequestParam(value = "size", required = true, defaultValue = "10") Integer size
     ){
         SearchAccountRequest request = SearchAccountRequest.builder()
                 .id(id)
@@ -60,7 +60,7 @@ public class AccountController {
     public WebResponse<AccountResponse> get(
             @PathVariable(name = "id", required = true) String id
     ){
-        AccountResponse accountResponse = accountService.view(id);
+        AccountResponse accountResponse = accountService.get(id);
         return WebResponse.<AccountResponse>builder()
                 .data(accountResponse)
                 .build();
